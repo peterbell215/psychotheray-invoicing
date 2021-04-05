@@ -1,0 +1,68 @@
+version: '3.7'
+
+services:
+  katys-invoices-db:
+    image: postgres:latest
+    hostname: katys-invoices-db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+    volumes:
+      - database_data:/var/lib/postgresql/data
+
+  sidekiq:
+    build:
+      context: .
+      dockerfile: docker/app/ruby-on-rails.dockerfile
+    command: bundle exec sidekiq -v
+    environment:
+      POSTGRES_URL: 'postgres://db/'
+      RAILS_CACHE_URL: 'redis://rails-cache:6380/'
+    links:
+      - katys-invoices-db
+      - sidekiq-cache
+      - rails-cache
+    volumes:
+      - '.:/app'
+
+  sidekiq-cache:
+    image: redis
+    hostname: sidekiq-cache
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6379:6379
+    volumes:
+      - ./docker/redis/sidekiq.conf:/usr/local/etc/redis/redis.conf
+
+  rails-cache:
+    image: redis
+    hostname: rails-cache
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6380:6380
+    volumes:
+      - ./docker/redis/rails-cache.conf:/usr/local/etc/redis/redis.conf
+
+  mailcatcher:
+    image: zolweb/docker-mailcatcher:latest
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+
+  dns-proxy-server:
+    image: defreitas/dns-proxy-server:latest
+    hostname: dns.mageddo
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf
+    network_mode: bridge
+    ports:
+      - "5380:5380"
+
+volumes:
+  database_data:
+    driver: local
+  tmp:
+    driver: local
