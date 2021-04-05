@@ -5,7 +5,7 @@
     import routes from './routes';
 </script>
 
-<style>
+<style lang="scss">
 
 </style>
 
