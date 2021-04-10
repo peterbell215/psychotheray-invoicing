@@ -1,6 +1,27 @@
 version: '3.7'
 
 services:
+  nginx:
+    image: nginx:latest
+    hostname: nginx
+    volumes:
+      - ./docker/nginx:/etc/nginx/conf.d
+    ports:
+      - "8080:80"
+
+  node:
+    image: node:latest
+    build:
+      context: .
+      dockerfile: ./docker/app/node.dockerfile
+    working_dir: /home/node/app
+    volumes:
+      - ./svelte-app/public:/home/node/app/public
+      - ./svelte-app/src:/home/node/app/src
+    ports:
+      - 5000:5000
+    command: "yarn run dev"
+
   katys-invoices-db:
     image: postgres:latest
     hostname: katys-invoices-db
@@ -58,6 +79,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/resolv.conf:/etc/resolv.conf
     network_mode: bridge
+    environment:
+      - MG_LOG_LEVEL=WARNING
     ports:
       - "5380:5380"
 

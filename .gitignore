@@ -31,3 +31,5 @@ svelte-app/public/vendor/bootstrap/
 svelte-app/yarn-error.log
 
 tmp/
+
+svelte-app/public/vendor/\@fontawesome-free/

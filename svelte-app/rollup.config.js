@@ -3,7 +3,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
-import sveltePreprocess from 'svelte-preprocess';
+import preprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 import copy from 'rollup-plugin-copy';
@@ -20,7 +20,7 @@ function serve() {
 	return {
 		writeBundle() {
 			if (server) return;
-			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
+			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev', '--host'], {
 				stdio: ['ignore', 'inherit', 'inherit'],
 				shell: true
 			});
@@ -41,28 +41,20 @@ export default {
 	},
 	plugins: [
 		svelte({
-			// enable run-time checks when not in production
-			dev: !production,
-			// we'll extract any component CSS out into
-			// a separate file - better for performance
-			css: (css) => {
-				css.write("public/build/bundle.css")
+			compilerOptions: {
+				// enable run-time checks when not in production
+				dev: !production
 			},
-			preprocess: sveltePreprocess({
-				postcss: true,
-				scss: {
-					includePaths: ["src"],
-					postcss: {
-						plugins: [require("autoprefixer")],
-					},
-				},
-			}),
+			preprocess: preprocess()
 		}),
 
 		copy({
 			targets: [{
 				src: 'node_modules/bootstrap/dist/**/*',
 				dest: 'public/vendor/bootstrap'
+			},{
+				src: 'node_modules/@fortawesome/fontawesome-free/**/*',
+				dest: 'public/vendor/@fontawesome-free/fontawesome-free'
 			}]
 		}),
 
