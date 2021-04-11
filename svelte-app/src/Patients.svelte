@@ -5,10 +5,11 @@
 
     export let patients = [];
 
+    /*
     onMount(async () => {
         const res = await fetch("http://localhost:3000/patients.json");
         patients = await res.json();
-    });
+    });*/
 </script>
 
 <style lang="scss">
@@ -50,3 +51,5 @@
     {/each}
     </tbody>
 </table>
+
+Added some text.

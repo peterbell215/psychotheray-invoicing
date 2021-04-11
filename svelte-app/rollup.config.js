@@ -3,10 +3,10 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
-import preprocess from 'svelte-preprocess';
+import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
-import copy from 'rollup-plugin-copy';
+import scss from 'rollup-plugin-scss';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -20,7 +20,7 @@ function serve() {
 	return {
 		writeBundle() {
 			if (server) return;
-			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev', '--host'], {
+			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
 				stdio: ['ignore', 'inherit', 'inherit'],
 				shell: true
 			});
@@ -41,22 +41,21 @@ export default {
 	},
 	plugins: [
 		svelte({
+			preprocess: sveltePreprocess({ sourceMap: !production }),
 			compilerOptions: {
 				// enable run-time checks when not in production
 				dev: !production
 			},
-			preprocess: preprocess()
+			onwarn: (warning, handler) => {
+				const { code, frame } = warning;
+				if (code === "css-unused-selector")
+					return;
+		
+				handler(warning);
+			}
 		}),
 
-		copy({
-			targets: [{
-				src: 'node_modules/bootstrap/dist/**/*',
-				dest: 'public/vendor/bootstrap'
-			},{
-				src: 'node_modules/@fortawesome/fontawesome-free/**/*',
-				dest: 'public/vendor/@fontawesome-free/fontawesome-free'
-			}]
-		}),
+		scss(),
 
 		// we'll extract any component CSS out into
 		// a separate file - better for performance

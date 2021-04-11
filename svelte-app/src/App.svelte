@@ -8,8 +8,8 @@
 	import routes from './routes';
 </script>
 
-<style lANG="scss" global>
-
+<style lang='scss'>
+	@import 'bootstrap/scss/bootstrap.scss';
 </style>
 
 <main>
@@ -33,4 +33,3 @@
 
 	<Router {routes}/>
 </main>
-
