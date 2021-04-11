@@ -51,5 +51,3 @@
     {/each}
     </tbody>
 </table>
-
-Added some text.
