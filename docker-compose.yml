@@ -8,12 +8,16 @@ services:
       - ./docker/nginx:/etc/nginx/conf.d
     ports:
       - "8080:80"
+    links:
+      - dns-proxy-server
+      - svelte-app
 
-  node:
+  svelte-app:
     image: node:latest
+    hostname: svelte-app
     build:
       context: .
-      dockerfile: ./docker/app/node.dockerfile
+      dockerfile: ./docker/app/svelte.dockerfile
     working_dir: /home/node/app
     volumes:
       - ./svelte-app/public:/home/node/app/public

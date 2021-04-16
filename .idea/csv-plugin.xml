@@ -17,6 +17,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/docker/nginx/default.conf">
+          <value>
+            <Attribute>
+              <option name="separator" value=";" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/svelte-app/package.json">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/svelte-app/public/index.html">
+          <value>
+            <Attribute>
+              <option name="separator" value="&#9;" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/svelte-app/rollup.config.js">
           <value>
             <Attribute>
